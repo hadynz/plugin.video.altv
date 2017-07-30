@@ -7,27 +7,32 @@ from resources.lib import kodiutils
 from resources.lib import kodilogging
 from xbmcgui import ListItem
 from xbmcplugin import addDirectoryItem, endOfDirectory
-
+from repository import AltvRepository
 
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 kodilogging.config()
 plugin = routing.Plugin()
 
+repository = AltvRepository("https://api.altv.com:443/v3")
+
 
 @plugin.route('/')
 def index():
-    addDirectoryItem(plugin.handle, plugin.url_for(
-        show_category, "one"), ListItem("Category One"), True)
-    addDirectoryItem(plugin.handle, plugin.url_for(
-        show_category, "two"), ListItem("Category Two"), True)
+    shows = repository.get_shows()
+
+    for show in shows:
+        addDirectoryItem(plugin.handle, plugin.url_for(show_show, show.slug), ListItem(show.title), True)
+
     endOfDirectory(plugin.handle)
 
+@plugin.route('/shows/<slug>')
+def show_show(slug):
+    videos = repository.get_show_videos(slug)
+    
+    for video in videos:
+        addDirectoryItem(plugin.handle, "", ListItem(video.title))
 
-@plugin.route('/category/<category_id>')
-def show_category(category_id):
-    addDirectoryItem(
-        plugin.handle, "", ListItem("Hello category %s!" % category_id))
     endOfDirectory(plugin.handle)
 
 def run():
