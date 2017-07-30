@@ -10,7 +10,7 @@ class ShowDto(object):
         self.previewImage = previewImage
         self.coverImage = coverImage
 
-class VideoDto(object):
+class VideoSummaryDto(object):
     def __init__(self, id, title, slug, viewCount, duration, previewImage):
         self.id = id
         self.title = title
@@ -19,6 +19,18 @@ class VideoDto(object):
         self.duration = duration
         self.previewImage = previewImage
 
+class VideoDto(object):
+    def __init__(self, id, ooyala_id):
+        self.id = id
+        self.streamId = ooyala_id
+
+class VideoStream(object):
+    def __init__(self, url, videoBitrate, audioBitrate, muxingFormat):
+        self.url = url
+        self.videoBitrate = videoBitrate
+        self.audioBitrate = audioBitrate
+        self.muxingFormat = muxingFormat
+
 class AltvRepository(object):
 
     def __init__(self, baseHttp):
@@ -26,20 +38,31 @@ class AltvRepository(object):
 
     def get_shows(self):
         response = requests.get("%s/shows" % self._baseHttp)
-        # TODO: Check if status is 200
-        logging.warn(response.json())
 
         shows = response.json()['data']['shows']
+
         return map(lambda show: ShowDto(show['id'], show['title'], show['slug'], show['videos'], show['images']['preview'], show['images']['cover']), shows)
 
     def get_show_videos(self, showSlug):
-        logging.warn("%s/videos?show=%s&per_page=9999" % (self._baseHttp, showSlug))
         response = requests.get("%s/videos?show=%s&per_page=9999" % (self._baseHttp, showSlug))
-        logging.warn(response.json())
 
         videos = response.json()['data']['videos']
-        return map(lambda show: VideoDto(show['id'], show['title'], show['slug'], show['views'], show['duration'], show['images']['preview']), videos)
 
+        return map(lambda video: VideoSummaryDto(video['id'], video['title'], video['slug'], video['views'], video['duration'], video['images']['preview']), videos)
+
+    def get_video(self, videoId):
+        response = requests.get("%s/videos/%s" % (self._baseHttp, videoId))
+
+        video = response.json()['data']
+
+        return VideoDto(video['id'], video['ooyala_id'])
+
+    def get_video_streams(self, videoStreamId):
+        response = requests.get("%s/videos/streams/%s" % (self._baseHttp, videoStreamId))
+
+        streams = response.json()['data']['streams']
+
+        return map(lambda stream: VideoStream(stream['url'], stream['average_video_bitrate'], stream['audio_bitrate'], stream['muxing_format']), streams)
 
 repository = AltvRepository("https://api.altv.com:443/v3")
 shows = repository.get_shows()
