@@ -20,9 +20,11 @@ class VideoSummaryDto(object):
         self.previewImage = previewImage
 
 class VideoDto(object):
-    def __init__(self, id, ooyala_id):
+    def __init__(self, id, ooyala_id, title, description):
         self.id = id
         self.streamId = ooyala_id
+        self.title = title
+        self.description = description
 
 class VideoStream(object):
     def __init__(self, url, videoBitrate, audioBitrate, muxingFormat):
@@ -55,7 +57,7 @@ class AltvRepository(object):
 
         video = response.json()['data']
 
-        return VideoDto(video['id'], video['ooyala_id'])
+        return VideoDto(video['id'], video['ooyala_id'], video['title'], video['description'])
 
     def get_video_streams(self, videoStreamId):
         response = requests.get("%s/videos/streams/%s" % (self._baseHttp, videoStreamId))

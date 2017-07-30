@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import routing
 import logging
 
 import xbmcaddon
+from xbmc import Player, PlayList, PLAYLIST_VIDEO
 from xbmcgui import ListItem
 from xbmcplugin import addDirectoryItem, endOfDirectory, setResolvedUrl
 
@@ -15,7 +17,8 @@ ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 kodilogging.config()
 plugin = routing.Plugin()
-repository = AltvRepository("https://api.altv.com:443/v3")
+repository = AltvRepository('https://api.altv.com:443/v3')
+
 
 @plugin.route('/')
 def list_shows():
@@ -35,6 +38,7 @@ def list_shows():
 
     endOfDirectory(plugin.handle)
 
+
 @plugin.route('/shows/<slug>')
 def list_show_videos(slug):
     videos = repository.get_show_videos(slug)
@@ -52,18 +56,27 @@ def list_show_videos(slug):
 
     endOfDirectory(plugin.handle)
 
+
 @plugin.route('/video/<videoId>')
 def play_video(videoId):
-    logging.warn("playing video %s" % videoId)
     video = repository.get_video(videoId)
     streams = repository.get_video_streams(video.streamId)
 
-    logging.warn("Stream xox")
-    logging.warn(streams[0])
+    logging.warn('*****url***: ' + streams[0].url)
 
-    setResolvedUrl()
+    item = ListItem(path=streams[0].url)
+    item.setProperty(u'IsPlayable', u'true')
+    item.setInfo(
+        type='Video',
+        infoLabels={'Title': video.title, 'Plot': video.description}
+    )
 
-    endOfDirectory(plugin.handle)
+    playlist = PlayList(PLAYLIST_VIDEO)
+    playlist.clear()
+    playlist.add(streams[0].url, item)
+
+    player = Player()
+    player.play(playlist)
 
 def run():
     plugin.run()
