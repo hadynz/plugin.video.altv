@@ -6,12 +6,11 @@ env:
     - ZIP_FILENAME: plugin.video.altv-${TRAVIS_TAG:1}.zip
 
 before_script:
-  - cd ..
-  - mv $GITHUB_REPO plugin.video.altv
+  - cd .. # Change directory one level up in order to compress the folder to publish as release
 
 script:
   - echo ${ZIP_FILENAME}
-  - zip $ZIP_FILENAME -x "*/.*" "*/docs/*" "*/*.pyc" "*/*.pyo" "*/*.pyo" -r ./plugin.video.altv
+  - zip $ZIP_FILENAME -x "*/.*" "*/docs/*" "*/*.pyc" "*/*.pyo" "*/*.pyo" -r ./${GITHUB_REPO}
 
 deploy:
   provider: releases
