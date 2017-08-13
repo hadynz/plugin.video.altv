@@ -6,7 +6,7 @@ env:
     - ZIP_FILENAME: plugin.video.altv-${TRAVIS_TAG}.zip
 
 before_script:
-  - sed -i 's/VERSION/${TRAVIS_TAG}/g' addon.xml # Dynamically set verison number in `addon.xml`
+  - sed -i "s/@VERSION@/${TRAVIS_TAG}/g" addon.xml # Dynamically set verison number in `addon.xml`
   - cd .. # Change directory one level up in order to compress the folder to publish as release
 
 script:
