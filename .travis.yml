@@ -10,7 +10,6 @@ before_script:
   - cd .. # Change directory one level up in order to compress the folder to publish as release
 
 script:
-  - echo ${ZIP_FILENAME}
   - zip $ZIP_FILENAME -x "*/.*" "*/docs/*" "*/*.pyc" "*/*.pyo" "*/*.pyo" "*/tests/*" -r ./${GITHUB_REPO}
 
 deploy:
