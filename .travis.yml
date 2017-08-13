@@ -2,9 +2,15 @@ language: python
 
 env:
   global:
+    - GITHUB_REPO: plugin.video.altv
     - ZIP_FILENAME: plugin.video.altv-${TRAVIS_TAG:1}.zip
 
+before_script:
+  - cd ..
+  - mv $GITHUB_REPO plugin.video.altv
+
 script:
+  - echo ${ZIP_FILENAME}
   - zip $ZIP_FILENAME -x "*/.*" "*/docs/*" "*/*.pyc" "*/*.pyo" "*/*.pyo" -r ./plugin.video.altv
 
 deploy:
