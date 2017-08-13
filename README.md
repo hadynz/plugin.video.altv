@@ -1,6 +1,10 @@
 # plugin.video.altv - ALTV plugin for Kodi
 
+[![Build Status](https://travis-ci.org/hadynz/plugin.video.altv.svg?branch=master)](https://travis-ci.org/hadynz/plugin.video.altv)
+
 Kodi plugin that lets you watch [ALTV media][1] video content in HD and for free.
+
+<img width="300" alt="screen shot 2017-08-13 at 10 27 49 pm" src="https://user-images.githubusercontent.com/315585/29248864-deef1cb2-8076-11e7-9c7e-9678b942a1a8.png"> &nbsp; <img width="300" alt="screen shot 2017-08-13 at 10 28 51 pm" src="https://user-images.githubusercontent.com/315585/29248863-dec78bc0-8076-11e7-91ea-54e82c213b50.png">
 
 ## Features
 
