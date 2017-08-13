@@ -10,7 +10,7 @@ before_script:
 
 script:
   - echo ${ZIP_FILENAME}
-  - zip $ZIP_FILENAME -x "*/.*" "*/docs/*" "*/*.pyc" "*/*.pyo" "*/*.pyo" -r ./${GITHUB_REPO}
+  - zip $ZIP_FILENAME -x "*/.*" "*/docs/*" "*/*.pyc" "*/*.pyo" "*/*.pyo" "*/tests/*" -r ./${GITHUB_REPO}
 
 deploy:
   provider: releases
