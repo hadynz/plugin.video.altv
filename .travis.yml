@@ -1,13 +1,16 @@
 language: python
-python:
-  - "2.7"
 
-# script:
+env:
+  global:
+    - ZIP_FILENAME: plugin.video.altv-${TRAVIS_TAG:1}.zip
+
+script:
+  - zip $ZIP_FILENAME -x "*/.*" "*/docs/*" "*/*.pyc" "*/*.pyo" "*/*.pyo" -r ./plugin.video.altv
 
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN # Set in travis-ci.org dashboard
-  file: plugin.video.altv-${TRAVIS_TAG:1}.zip
+  file: ${ZIP_FILENAME}
   skip_cleanup: true # Prevent Travis from deleting files created during build to use for upload
   on:
-    tags: true
+    tags: true # Required to make sure that tags get deployed
