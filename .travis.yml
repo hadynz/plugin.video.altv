@@ -3,7 +3,7 @@ language: python
 env:
   global:
     - GITHUB_REPO: plugin.video.altv
-    - ZIP_FILENAME: plugin.video.altv-${TRAVIS_TAG:1}.zip
+    - ZIP_FILENAME: plugin.video.altv-${TRAVIS_TAG}.zip
 
 before_script:
   - cd .. # Change directory one level up in order to compress the folder to publish as release
