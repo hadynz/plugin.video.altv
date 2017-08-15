@@ -17,14 +17,15 @@ ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 kodilogging.config()
 plugin = routing.Plugin()
-repository = AltvRepository('https://api.altv.com:443/v3')
+repository = AltvRepository('https://api.altv.com/v3')
 
 
 @plugin.route('/')
 def list_shows():
-    shows = repository.get_shows()
+    currentPage = 1 if 'currentPage' not in plugin.args else int(plugin.args['currentPage'][0])
+    response = repository.get_shows(currentPage)
 
-    for show in shows:
+    for show in response.items:
         addDirectoryItem(
             handle=plugin.handle,
             url=plugin.url_for(list_show_videos, show.slug),
@@ -34,6 +35,15 @@ def list_shows():
             ),
             isFolder=True,
             totalItems=show.videoCount
+        )
+
+    if response.pagination.hasNext:
+        addDirectoryItem(
+            handle=plugin.handle,
+            url=plugin.url_for(list_shows, currentPage=str(
+                response.pagination.nextPage)),
+            listitem=ListItem(label='Next...'),
+            isFolder=True
         )
 
     endOfDirectory(plugin.handle)
@@ -77,6 +87,7 @@ def play_video(videoId):
 
     player = Player()
     player.play(playlist)
+
 
 def run():
     plugin.run()
