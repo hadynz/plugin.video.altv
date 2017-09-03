@@ -9,7 +9,6 @@ from xbmc import Player, PlayList, PLAYLIST_VIDEO
 from xbmcgui import ListItem
 from xbmcplugin import addDirectoryItem, endOfDirectory, setResolvedUrl
 
-from resources.lib import kodiutils
 from resources.lib import kodilogging
 from repository import AltvRepository
 from analytics import Analytics
@@ -18,8 +17,9 @@ ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 kodilogging.config()
 plugin = routing.Plugin()
+
 repository = AltvRepository('https://api.altv.com/v3')
-analytics = Analytics(123, 'UA-59891600-7')
+analytics = Analytics('UA-59891600-7')
 
 
 @plugin.route('/')
