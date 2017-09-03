@@ -12,12 +12,14 @@ from xbmcplugin import addDirectoryItem, endOfDirectory, setResolvedUrl
 from resources.lib import kodiutils
 from resources.lib import kodilogging
 from repository import AltvRepository
+from analytics import Analytics
 
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 kodilogging.config()
 plugin = routing.Plugin()
 repository = AltvRepository('https://api.altv.com/v3')
+analytics = Analytics(123, 'UA-59891600-7')
 
 
 @plugin.route('/')
@@ -72,14 +74,14 @@ def play_video(videoId):
     video = repository.get_video(videoId)
     streams = repository.get_video_streams(video.streamId)
 
-    logging.warn('*****url***: ' + streams[0].url)
-
     item = ListItem(path=streams[0].url)
     item.setProperty(u'IsPlayable', u'true')
     item.setInfo(
         type='Video',
         infoLabels={'Title': video.title, 'Plot': video.description}
     )
+
+    analytics.trackVideoPlayed(video.slug)
 
     playlist = PlayList(PLAYLIST_VIDEO)
     playlist.clear()
